@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFormStore } from "../store/useStore";
-import type { JobSheetFormData } from "../types";
-import OrderDetailsSection from "../components/sections/OrderDetailsSection";
-import JobDetailsSection from "../components/sections/JobDetailsSection";
-import InProcessDetailsSection from "../components/sections/InProcessDetailsSection";
-import RemarksSection from "../components/sections/RemarksSection";
-import FooterSection from "../components/sections/FooterSection";
+import type {
+  JobSheetFormData,
+  OrderDetails,
+  JobDetails,
+  InProcessDetails,
+  Remarks,
+  Footer,
+} from "../types";
+import OrderDetailsSection from "../components/sections/JobReport/OrderDetailsSection";
+import JobDetailsSection from "../components/sections/JobReport/JobDetailsSection";
+import InProcessDetailsSection from "../components/sections/JobReport/InProcessDetailsSection";
+import RemarksSection from "../components/sections/JobReport/RemarksSection";
+import FooterSection from "../components/sections/JobReport/FooterSection";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
 import { FiEdit3, FiCheck, FiX, FiRefreshCw } from "react-icons/fi";
@@ -92,10 +99,7 @@ const JobDetail: React.FC = () => {
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div
-            onClick={() => navigate("/")}
-            className="bg-blue-600 cursor-pointer text-white px-6 py-4 flex items-center justify-between"
-          >
+          <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold text-center">
               {isEditing
                 ? "Edit Inspection Report"
@@ -174,7 +178,9 @@ const JobDetail: React.FC = () => {
                   errors={errors}
                   isExpanded={expandedSections.has("orderDetails")}
                   onToggle={() => toggleSection("orderDetails")}
-                  onChange={(data) => handleDataChange("orderDetails", data)}
+                  onChange={(data: Partial<OrderDetails>) =>
+                    handleDataChange("orderDetails", data)
+                  }
                 />
 
                 <JobDetailsSection
@@ -182,7 +188,9 @@ const JobDetail: React.FC = () => {
                   errors={errors}
                   isExpanded={expandedSections.has("jobDetails")}
                   onToggle={() => toggleSection("jobDetails")}
-                  onChange={(data) => handleDataChange("jobDetails", data)}
+                  onChange={(data: Partial<JobDetails>) =>
+                    handleDataChange("jobDetails", data)
+                  }
                 />
 
                 <InProcessDetailsSection
@@ -190,7 +198,7 @@ const JobDetail: React.FC = () => {
                   errors={errors}
                   isExpanded={expandedSections.has("inProcessDetails")}
                   onToggle={() => toggleSection("inProcessDetails")}
-                  onChange={(data) =>
+                  onChange={(data: Partial<InProcessDetails>) =>
                     handleDataChange("inProcessDetails", data)
                   }
                 />
@@ -200,7 +208,9 @@ const JobDetail: React.FC = () => {
                   errors={errors}
                   isExpanded={expandedSections.has("remarks")}
                   onToggle={() => toggleSection("remarks")}
-                  onChange={(data) => handleDataChange("remarks", data)}
+                  onChange={(data: Partial<Remarks>) =>
+                    handleDataChange("remarks", data)
+                  }
                 />
 
                 <FooterSection
@@ -208,7 +218,9 @@ const JobDetail: React.FC = () => {
                   errors={errors}
                   isExpanded={expandedSections.has("footer")}
                   onToggle={() => toggleSection("footer")}
-                  onChange={(data) => handleDataChange("footer", data)}
+                  onChange={(data: Partial<Footer>) =>
+                    handleDataChange("footer", data)
+                  }
                 />
               </form>
             ) : (

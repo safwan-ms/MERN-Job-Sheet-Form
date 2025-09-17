@@ -59,6 +59,14 @@ PORT=3000
 MONGO_URI=mongodb://localhost:27017/job_sheet_db
 ```
 
+- Frontend `.env` (optional) — create `frontend/.env` if you prefer an explicit base URL instead of the dev proxy:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+Note: During development the frontend is already configured to proxy `/api` requests to the backend via `frontend/vite.config.ts`, so a frontend `.env` is not required.
+
 ### Running the Project
 
 Open two terminals (one for the backend, one for the frontend):
@@ -67,7 +75,7 @@ Backend (Express API):
 
 ```bash
 cd backend
-npm run build && npm run start
+npm run dev
 ```
 
 Frontend (Vite dev server):
@@ -117,3 +125,4 @@ Base URL: `http://localhost:3000/api/job`
 
 - Ensure MongoDB is running locally, or update `MONGO_URI` to your hosted cluster.
 - When deploying, set appropriate environment variables and configure your production web server to forward `/api` requests to the backend.
+

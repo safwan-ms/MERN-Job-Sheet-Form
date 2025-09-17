@@ -1,11 +1,18 @@
 import React from "react";
 import { useFormStore } from "../store/useStore";
+import type {
+  OrderDetails,
+  JobDetails,
+  InProcessDetails,
+  Remarks,
+  Footer,
+} from "../types";
 import AddJobBtn from "../components/button/AddJobBtn";
-import OrderDetailsSection from "../components/sections/OrderDetailsSection";
-import JobDetailsSection from "../components/sections/JobDetailsSection";
-import InProcessDetailsSection from "../components/sections/InProcessDetailsSection";
-import RemarksSection from "../components/sections/RemarksSection";
-import FooterSection from "../components/sections/FooterSection";
+import OrderDetailsSection from "../components/sections/JobReport/OrderDetailsSection";
+import JobDetailsSection from "../components/sections/JobReport/JobDetailsSection";
+import InProcessDetailsSection from "../components/sections/JobReport/InProcessDetailsSection";
+import RemarksSection from "../components/sections/JobReport/RemarksSection";
+import FooterSection from "../components/sections/JobReport/FooterSection";
 import { useNavigate } from "react-router-dom";
 
 const JobSheetForm: React.FC = () => {
@@ -65,7 +72,9 @@ const JobSheetForm: React.FC = () => {
               errors={errors}
               isExpanded={expandedSections.has("orderDetails")}
               onToggle={() => toggleSection("orderDetails")}
-              onChange={(data) => updateFormData("orderDetails", data)}
+              onChange={(data: Partial<OrderDetails>) =>
+                updateFormData("orderDetails", data)
+              }
             />
 
             <JobDetailsSection
@@ -73,7 +82,9 @@ const JobSheetForm: React.FC = () => {
               errors={errors}
               isExpanded={expandedSections.has("jobDetails")}
               onToggle={() => toggleSection("jobDetails")}
-              onChange={(data) => updateFormData("jobDetails", data)}
+              onChange={(data: Partial<JobDetails>) =>
+                updateFormData("jobDetails", data)
+              }
             />
 
             <InProcessDetailsSection
@@ -81,7 +92,9 @@ const JobSheetForm: React.FC = () => {
               errors={errors}
               isExpanded={expandedSections.has("inProcessDetails")}
               onToggle={() => toggleSection("inProcessDetails")}
-              onChange={(data) => updateFormData("inProcessDetails", data)}
+              onChange={(data: Partial<InProcessDetails>) =>
+                updateFormData("inProcessDetails", data)
+              }
             />
 
             <RemarksSection
@@ -89,7 +102,9 @@ const JobSheetForm: React.FC = () => {
               errors={errors}
               isExpanded={expandedSections.has("remarks")}
               onToggle={() => toggleSection("remarks")}
-              onChange={(data) => updateFormData("remarks", data)}
+              onChange={(data: Partial<Remarks>) =>
+                updateFormData("remarks", data)
+              }
             />
 
             <FooterSection
@@ -97,7 +112,9 @@ const JobSheetForm: React.FC = () => {
               errors={errors}
               isExpanded={expandedSections.has("footer")}
               onToggle={() => toggleSection("footer")}
-              onChange={(data) => updateFormData("footer", data)}
+              onChange={(data: Partial<Footer>) =>
+                updateFormData("footer", data)
+              }
             />
 
             <AddJobBtn />
