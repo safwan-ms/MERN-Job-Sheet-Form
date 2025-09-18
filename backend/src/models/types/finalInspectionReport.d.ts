@@ -62,7 +62,7 @@ export interface InspectorInfo {
   date?: string;
 }
 
-export interface IFinalInspection extends Document {
+export interface IFinalInspectionReport extends Document {
   staticPressure: StaticPressureDetails;
   testingLength: TestingLengthRow[];
   continuity: ContinuityRow[];

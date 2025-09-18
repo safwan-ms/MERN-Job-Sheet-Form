@@ -8,7 +8,7 @@ dotenv.config();
 //Utils
 import { connectDB } from "./config/db.js";
 import jobRoutes from "./routes/jobRoutes.js";
-import finalInspectionRoutes from "./routes/finalInspectionRoutes.js";
+import finalInspectionRoutes from "./routes/finalInspectionReportRoutes.js";
 
 connectDB();
 

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import type { IFinalInspection } from "./types/finalInspection.js";
+import type { IFinalInspectionReport } from "./types/finalInspectionReport.js";
 
 // Sub-schema: Static Pressure Test Details
 const StaticPressureSchema = new Schema(
