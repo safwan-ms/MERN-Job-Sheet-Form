@@ -33,7 +33,7 @@ const JobList: React.FC = () => {
                   <li
                     key={job._id}
                     className="py-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 px-2 rounded"
-                    onClick={() => navigate(`/report/${job._id}`)}
+                    onClick={() => navigate(`/jobs/${job._id}`)}
                   >
                     <span className="font-medium text-gray-800">
                       {job.orderDetails?.customer}
@@ -49,7 +49,7 @@ const JobList: React.FC = () => {
 
           <button
             className="fixed bottom-5 right-5 bg-blue-600 p-3 cursor-pointer rounded-full z-50 transition-transform duration-300"
-            onClick={() => navigate("/create-job")}
+            onClick={() => navigate("/jobs/new")}
           >
             <TiUserAdd color="white" size={20} />
           </button>
