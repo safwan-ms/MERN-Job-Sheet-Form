@@ -1,25 +1,28 @@
 import { Request, Response } from "express";
-import FinalInspection from "../models/FinalInspectionReport.js";
+import FinalInspectionReport from "../models/FinalInspectionReport.js";
 
 export const createFinalInspectionReport = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const finalInspection = new FinalInspection(req.body);
-    const savedInspection = await finalInspection.save();
+    const finalInspectionReport = new FinalInspectionReport(req.body);
+    const savedInspection = await finalInspectionReport.save();
 
     res.status(201).json({
-      message: "FinalInspection created successfully",
+      message: "FinalInspectionReport created successfully",
       data: savedInspection,
     });
   } catch (error) {
-    console.error("Error creating FinalInspection:", error);
-    res.status(500).json({
-      message: "Failed to create FinalInspection",
-      error: "Server Error",
+    console.error(
+      "Error in createFinalInspectionReport :",
+      (error as Error).message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create FinalInspectionReport",
+      error: (error as Error).message,
     });
-    console.error("Error in createFinalInspection :", (error as Error).message);
   }
 };
 
@@ -28,12 +31,50 @@ export const getAllFinalInspectionReports = async (
   res: Response
 ) => {
   try {
-    const finalInspections = await FinalInspection.find();
+    const finalInspectionReports = await FinalInspectionReport.find();
     res.status(200).json({
       success: true,
-      data: finalInspections,
+      data: finalInspectionReports,
     });
   } catch (error) {
-    console.error("Error in getAllInspection :", (error as Error).message);
+    console.error("Error in getAllFinalInspection :", (error as Error).message);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error while fetching all Final Inspection",
+      error: (error as Error).message,
+    });
+  }
+};
+
+export const getFinalInspectionReportById = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const finalInspectionReport = await FinalInspectionReport.findById(id);
+    if (!finalInspectionReport) {
+      res.status(404).json({
+        success: false,
+        message: "Final Inspection report not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: finalInspectionReport,
+    });
+  } catch (error) {
+    console.error(
+      "Error get final inspection report by id: ",
+      (error as Error).message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: `Error get final inspection report by id: ${
+        (error as Error).message
+      }`,
+    });
   }
 };

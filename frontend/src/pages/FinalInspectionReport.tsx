@@ -13,7 +13,7 @@ import type {
   TestingLengthRow,
 } from "../components/sections/FinalInspection/types";
 
-const FinalInspection: React.FC = () => {
+const FinalInspectionReport: React.FC = () => {
   const navigate = useNavigate();
 
   const [staticPressure, setStaticPressure] = useState<StaticPressureDetails>({
@@ -220,4 +220,4 @@ const FinalInspection: React.FC = () => {
   );
 };
 
-export default FinalInspection;
+export default FinalInspectionReport;

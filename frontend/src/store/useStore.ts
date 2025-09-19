@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import type { JobSheetFormData, FormErrors } from "../types";
 import { jobSchema } from "../validations/jobSchema";
 import { ZodError } from "zod";
+import { JOBS_API } from "./constants";
 
 type JobListItem = {
   _id: string;
@@ -224,7 +225,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
   fetchJobs: async () => {
     try {
       set({ jobsLoading: true, jobsError: "" });
-      const response = await axios.get("/api/job");
+      const response = await axios.get(JOBS_API.GET_ALL);
       const data = Array.isArray(response.data)
         ? response.data
         : response.data?.data ?? [];

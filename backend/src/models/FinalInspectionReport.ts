@@ -92,7 +92,7 @@ const FinalAcceptanceSchema = new Schema(
 );
 
 // Main schema tying all sections together
-export const FinalInspectionSchema = new Schema<IFinalInspection>(
+export const FinalInspectionSchema = new Schema<IFinalInspectionReport>(
   {
     staticPressure: { type: StaticPressureSchema, required: true },
     testingLength: { type: [TestingLengthRowSchema], default: [] },
@@ -105,8 +105,8 @@ export const FinalInspectionSchema = new Schema<IFinalInspection>(
 );
 
 // Model
-const FinalInspection = mongoose.model<IFinalInspection>(
+const FinalInspectionReport = mongoose.model<IFinalInspectionReport>(
   "FinalInspection",
   FinalInspectionSchema
 );
-export default FinalInspection;
+export default FinalInspectionReport;

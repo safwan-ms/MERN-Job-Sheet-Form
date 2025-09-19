@@ -70,9 +70,9 @@ export const getAllJobs = async (req: Request, res: Response) => {
 export const getJobById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const report = await Job.findById(id);
+    const job = await Job.findById(id);
 
-    if (!report) {
+    if (!job) {
       return res.status(404).json({
         success: false,
         message: "Report not found",
@@ -81,7 +81,7 @@ export const getJobById = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      data: report,
+      data: job,
     });
   } catch (error) {
     res.status(500).json({

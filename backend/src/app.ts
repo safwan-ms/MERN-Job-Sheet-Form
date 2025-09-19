@@ -8,7 +8,7 @@ dotenv.config();
 //Utils
 import { connectDB } from "./config/db.js";
 import jobRoutes from "./routes/jobRoutes.js";
-import finalInspectionRoutes from "./routes/finalInspectionReportRoutes.js";
+import finalInspectionReportRoutes from "./routes/finalInspectionReportRoutes.js";
 
 connectDB();
 
@@ -20,7 +20,7 @@ console.log(port);
 app.use(express.json());
 
 app.use("/api/jobs", jobRoutes);
-app.use("/api/final-inspection", finalInspectionRoutes);
+app.use("/api/final-inspection", finalInspectionReportRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
