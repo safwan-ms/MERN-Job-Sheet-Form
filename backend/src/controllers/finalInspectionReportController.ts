@@ -112,3 +112,39 @@ export const deleteFinalInspectionReport = async (
     });
   }
 };
+
+export const updateFinalInspectionReport = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const updatedFinalInspectionReport =
+      await FinalInspectionReport.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+
+    if (!updatedFinalInspectionReport) {
+      return res.status(404).json({
+        success: false,
+        message: "Final Inspection Report not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Final Inspection Report updated successfully",
+      data: updatedFinalInspectionReport,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server Error while updating final Inspection",
+      error: `Error while updating final inspection: ${
+        (error as Error).message
+      }`,
+    });
+  }
+};
