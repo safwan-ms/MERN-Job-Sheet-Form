@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormStore } from "../store/useStore";
+import { useFormStore } from "../store/job/useJobStore";
 import type {
   OrderDetails,
   JobDetails,

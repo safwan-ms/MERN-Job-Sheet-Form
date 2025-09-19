@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useFormStore } from "../store/useStore";
+import { useFormStore } from "../store/job/useJobStore";
 import type {
   JobSheetFormData,
   OrderDetails,

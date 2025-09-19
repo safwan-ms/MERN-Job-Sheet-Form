@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useFormStore } from "../store/useStore";
+import { useFormStore } from "../store/job/useJobStore";
 import { useNavigate } from "react-router-dom";
 import { TiUserAdd } from "react-icons/ti";
 

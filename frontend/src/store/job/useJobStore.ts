@@ -1,54 +1,10 @@
 import { create } from "zustand";
 import axios, { AxiosError } from "axios";
-import type { JobSheetFormData, FormErrors } from "../types";
-import { jobSchema } from "../validations/jobSchema";
+import type { JobSheetFormData, FormErrors } from "../../types";
+import { jobSchema } from "../../validations/jobSchema";
 import { ZodError } from "zod";
-import { JOBS_API } from "./constants";
-
-type JobListItem = {
-  _id: string;
-  orderDetails: {
-    customer: string;
-    flxTagNo: string;
-  };
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-type FormStore = {
-  formData: JobSheetFormData;
-  errors: FormErrors;
-  isSubmitting: boolean;
-  successMessage: string;
-  expandedSections: Set<string>;
-  jobs: JobListItem[];
-  jobsLoading: boolean;
-  jobsError: string;
-  updateFormData: <K extends keyof JobSheetFormData>(
-    section: K,
-    data: Partial<JobSheetFormData[K]>
-  ) => void;
-  toggleSection: (sectionId: string) => void;
-  setErrors: (errors: FormErrors) => void;
-  setSuccessMessage: (message: string) => void;
-  resetForm: () => void;
-  validateWithZod: (
-    data: JobSheetFormData
-  ) => { ok: true } | { ok: false; errors: FormErrors };
-  createJob: () => Promise<void>;
-  fetchJobs: () => Promise<void>;
-  // Added single job fetch and state
-  jobDetail?: JobSheetFormData & {
-    _id?: string;
-    createdAt?: string;
-    updatedAt?: string;
-  };
-  jobDetailLoading: boolean;
-  jobDetailError: string;
-  fetchJobById: (id: string) => Promise<void>;
-  updateJob: (id: string, data: JobSheetFormData) => Promise<void>;
-  deleteJob: (id: string) => Promise<void>;
-};
+import { JOBS_API } from "../constants";
+import type { FormStore, ApiErrorResponse } from "./jobTypes";
 
 const initialFormData: JobSheetFormData = {
   orderDetails: {
@@ -104,12 +60,6 @@ const mapPathToFlatKey = (path: string[]): string => {
     "footer.date": "date",
   };
   return map[joined] ?? joined;
-};
-
-type ApiErrorResponse = {
-  success?: boolean;
-  message?: string;
-  errors?: Array<{ field: string; message: string }>;
 };
 
 export const useFormStore = create<FormStore>((set, get) => ({
@@ -175,6 +125,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
     }
   },
 
+  //Implement job create
   createJob: async () => {
     const { formData, validateWithZod } = get();
     set({ successMessage: "", errors: {} });
@@ -186,7 +137,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
 
     try {
       set({ isSubmitting: true });
-      const response = await axios.post("/api/job", formData);
+      const response = await axios.post(`${JOBS_API}`, formData);
       if (response.data?.success) {
         set({
           formData: initialFormData,
@@ -222,10 +173,11 @@ export const useFormStore = create<FormStore>((set, get) => ({
     }
   },
 
+  //Implement job fetch
   fetchJobs: async () => {
     try {
       set({ jobsLoading: true, jobsError: "" });
-      const response = await axios.get(JOBS_API.GET_ALL);
+      const response = await axios.get(JOBS_API);
       const data = Array.isArray(response.data)
         ? response.data
         : response.data?.data ?? [];
@@ -244,7 +196,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
   fetchJobById: async (id: string) => {
     try {
       set({ jobDetailLoading: true, jobDetailError: "" });
-      const response = await axios.get(`/api/job/${id}`);
+      const response = await axios.get(`${JOBS_API}/${id}`);
       const data = response.data?.data ?? response.data;
 
       // Ensure optional fields are properly initialized
@@ -286,7 +238,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
 
     try {
       set({ isSubmitting: true });
-      const response = await axios.put(`/api/job/${id}`, cleanedData);
+      const response = await axios.put(`${JOBS_API}/${id}`, cleanedData);
       if (response.data?.success) {
         set({
           successMessage: "Report updated successfully.",
@@ -321,10 +273,11 @@ export const useFormStore = create<FormStore>((set, get) => ({
     }
   },
 
+  //Implement job delete
   deleteJob: async (id: string) => {
     try {
       set({ isSubmitting: true, successMessage: "", errors: {} });
-      const response = await axios.delete(`/api/job/${id}`);
+      const response = await axios.delete(`${JOBS_API}/${id}`);
       if (response.data?.success) {
         set((state) => ({
           successMessage: "Report deleted successfully.",

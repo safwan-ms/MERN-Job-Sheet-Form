@@ -1,4 +1,4 @@
-import { useFormStore } from "../../store/useStore";
+import { useFormStore } from "../../store/job/useJobStore";
 
 const AddJobBtn = () => {
   const { isSubmitting } = useFormStore();
