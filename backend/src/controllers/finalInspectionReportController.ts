@@ -78,3 +78,37 @@ export const getFinalInspectionReportById = async (
     });
   }
 };
+
+export const deleteFinalInspectionReport = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const deletedFinalInspectionReport =
+      await FinalInspectionReport.findByIdAndDelete(id);
+    if (!deletedFinalInspectionReport) {
+      return res.status(404).json({
+        success: false,
+        message: "Final Inspection Report not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Final Inspection Report deleted successfully",
+    });
+  } catch (error) {
+    console.log(
+      "Error while deleting the Final Inspection",
+      (error as Error).message
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: `Error while deleting final inspection: ${
+        (error as Error).message
+      }`,
+    });
+  }
+};
