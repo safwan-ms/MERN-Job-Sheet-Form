@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import StaticPressureSection from "../components/sections/FinalInspection/StaticPressureSection";
 import TestingLengthSection from "../components/sections/FinalInspection/TestingLengthSection";
 import ContinuitySection from "../components/sections/FinalInspection/ContinuitySection";
@@ -12,9 +12,22 @@ import type {
   StaticPressureDetails,
   TestingLengthRow,
 } from "../components/sections/FinalInspection/types";
+import { useFinalInspectionReportStore } from "@/store/finalInspectionReport/useFinalInspectionReportStore";
 
 const FinalInspectionReport: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("edit");
+
+  const {
+    finalInspectionDetail,
+    finalInspectionDetailLoading,
+    fetchFinalInspectionReportById,
+    createFinalInspectionReport,
+    updateFinalInspectionReport,
+    isSubmitting,
+    errors,
+  } = useFinalInspectionReportStore();
 
   const [staticPressure, setStaticPressure] = useState<StaticPressureDetails>({
     type: "",
@@ -102,6 +115,64 @@ const FinalInspectionReport: React.FC = () => {
     inspector: true,
   });
 
+  // Load existing report in edit mode
+  useEffect(() => {
+    if (editId) {
+      fetchFinalInspectionReportById(editId);
+    }
+  }, [editId, fetchFinalInspectionReportById]);
+
+  // When detail loads, populate the form state
+  useEffect(() => {
+    if (editId && finalInspectionDetail) {
+      setStaticPressure({ ...finalInspectionDetail.staticPressure });
+      setTestingLengthRows(
+        (finalInspectionDetail.testingLength || []).map((r, idx) => ({
+          slNo: r.slNo ?? idx + 1,
+          tagNo: r.tagNo || "",
+          gaugeSlNo: r.gaugeSlNo || "",
+          beforeWithoutWater: r.beforeWithoutWater || "",
+          beforeAt10psi: r.beforeAt10psi || "",
+          duringTestL1: r.duringTestL1 || "",
+          afterTestL2: r.afterTestL2 || "",
+          elongationPercent: r.elongationPercent || "",
+          remarks: r.remarks || "",
+        }))
+      );
+      setContinuityRows(
+        (finalInspectionDetail.continuity || []).map((r, idx) => ({
+          slNo: r.slNo ?? idx + 1,
+          tagNo: r.tagNo || "",
+          before: r.before || "",
+          during: r.during || "",
+          after: r.after || "",
+          remarks: r.remarks || "",
+        }))
+      );
+      setFinalInspectionRows(
+        (finalInspectionDetail.finalAcceptance?.rows || []).map((r, idx) => ({
+          slNo: r.slNo ?? idx + 1,
+          tagNo: r.tagNo || "",
+          hoseBld: r.hoseBld || "",
+          assemblyLength: r.assemblyLength || "",
+          endFittingVerification: r.endFittingVerification || "",
+          identification: r.identification || "",
+          colourCodes: r.colourCodes || "",
+          remarks: r.remarks || "",
+        }))
+      );
+      setOptions({ ...finalInspectionDetail.options });
+      setAcceptedQty(
+        finalInspectionDetail.finalAcceptance?.acceptedQty?.toString() || ""
+      );
+      setRejectedQty(
+        finalInspectionDetail.finalAcceptance?.rejectedQty?.toString() || ""
+      );
+      setInspectorName(finalInspectionDetail.inspector?.name || "");
+      setInspectorDate(finalInspectionDetail.inspector?.date || "");
+    }
+  }, [editId, finalInspectionDetail]);
+
   return (
     <div
       className="min-h-screen py-8"
@@ -129,6 +200,7 @@ const FinalInspectionReport: React.FC = () => {
               data={staticPressure}
               onChange={(d) => setStaticPressure({ ...staticPressure, ...d })}
               isExpanded={expanded.staticPressure}
+              errors={errors}
               onToggle={() =>
                 setExpanded((s) => ({
                   ...s,
@@ -190,6 +262,7 @@ const FinalInspectionReport: React.FC = () => {
                   finalAcceptance: !s.finalAcceptance,
                 }))
               }
+              errors={errors}
             />
 
             <InspectorSection
@@ -201,16 +274,49 @@ const FinalInspectionReport: React.FC = () => {
               onToggle={() =>
                 setExpanded((s) => ({ ...s, inspector: !s.inspector }))
               }
+              errors={errors}
             />
 
-            {/* Submit placeholder */}
             <div className="flex items-center justify-end">
               <button
                 type="button"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 shadow"
-                onClick={() => alert("Form UI ready. Hook up save as needed.")}
+                disabled={
+                  isSubmitting ||
+                  (editId ? finalInspectionDetailLoading : false)
+                }
+                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 shadow disabled:opacity-60"
+                onClick={async () => {
+                  const payload = {
+                    staticPressure,
+                    testingLength: testingLengthRows,
+                    continuity: continuityRows,
+                    options,
+                    finalAcceptance: {
+                      rows: finalInspectionRows,
+                      acceptedQty: acceptedQty
+                        ? Number(acceptedQty)
+                        : undefined,
+                      rejectedQty: rejectedQty
+                        ? Number(rejectedQty)
+                        : undefined,
+                    },
+                    inspector: { name: inspectorName, date: inspectorDate },
+                  };
+
+                  if (editId) {
+                    await updateFinalInspectionReport(editId, payload);
+                  } else {
+                    await createFinalInspectionReport(payload);
+                  }
+                }}
               >
-                Save
+                {editId
+                  ? isSubmitting
+                    ? "Updating..."
+                    : "Update"
+                  : isSubmitting
+                  ? "Saving..."
+                  : "Save"}
               </button>
             </div>
           </form>

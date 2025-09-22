@@ -2,6 +2,7 @@ import React from "react";
 import CollapsibleSection from "../../common/CollapsibleSection";
 import type { FinalInspectionRow } from "./types";
 import { inputBase, labelBase } from "./types";
+import type { FormErrors } from "../../../types";
 
 type Props = {
   rows: FinalInspectionRow[];
@@ -12,6 +13,7 @@ type Props = {
   onChangeRejectedQty: (value: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
+  errors: FormErrors;
 };
 
 const FinalAcceptanceSection: React.FC<Props> = ({
@@ -23,6 +25,7 @@ const FinalAcceptanceSection: React.FC<Props> = ({
   onChangeRejectedQty,
   isExpanded,
   onToggle,
+  errors,
 }) => {
   return (
     <CollapsibleSection
@@ -133,18 +136,32 @@ const FinalAcceptanceSection: React.FC<Props> = ({
         <div>
           <label className={labelBase}>Accepted Qty</label>
           <input
-            className={inputBase}
+            className={`${inputBase} ${
+              errors["finalAcceptance.acceptedQty"] ? "border-red-500" : ""
+            }`}
             value={acceptedQty}
             onChange={(e) => onChangeAcceptedQty(e.target.value)}
           />
+          {errors["finalAcceptance.acceptedQty"] && (
+            <p className="text-red-600 text-sm mt-1">
+              {errors["finalAcceptance.acceptedQty"]}
+            </p>
+          )}
         </div>
         <div>
           <label className={labelBase}>Rejected Qty</label>
           <input
-            className={inputBase}
+            className={`${inputBase} ${
+              errors["finalAcceptance.rejectedQty"] ? "border-red-500" : ""
+            }`}
             value={rejectedQty}
             onChange={(e) => onChangeRejectedQty(e.target.value)}
           />
+          {errors["finalAcceptance.rejectedQty"] && (
+            <p className="text-red-600 text-sm mt-1">
+              {errors["finalAcceptance.rejectedQty"]}
+            </p>
+          )}
         </div>
       </div>
     </CollapsibleSection>

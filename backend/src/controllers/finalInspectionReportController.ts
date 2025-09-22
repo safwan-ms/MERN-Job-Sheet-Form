@@ -1,16 +1,20 @@
 import { Request, Response } from "express";
 import FinalInspectionReport from "../models/FinalInspectionReport.js";
+import { finalInspectionReportSchema } from "../validations/finalInspectionReportSchema.js";
+import { ZodError } from "zod";
 
 export const createFinalInspectionReport = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const finalInspectionReport = new FinalInspectionReport(req.body);
+    const parsed = finalInspectionReportSchema.parse(req.body);
+    const finalInspectionReport = new FinalInspectionReport(parsed);
     const savedInspection = await finalInspectionReport.save();
 
     res.status(201).json({
-      message: "FinalInspectionReport created successfully",
+      success: true,
+      message: "Final Inspection Report created successfully.",
       data: savedInspection,
     });
   } catch (error) {
@@ -18,9 +22,28 @@ export const createFinalInspectionReport = async (
       "Error in createFinalInspectionReport :",
       (error as Error).message
     );
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation Error",
+        errors: error.issues.map((e) => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
+      });
+    }
+
+    if ((error as any)?.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: "Validation Error",
+        errors: (error as any).errors,
+      });
+    }
+
     return res.status(500).json({
       success: false,
-      message: "Failed to create FinalInspectionReport",
+      message: "Failed to create Final Inspection Report",
       error: (error as Error).message,
     });
   }

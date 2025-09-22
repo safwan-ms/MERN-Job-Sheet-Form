@@ -20,11 +20,19 @@ const InspectorSection: React.FC<Props> = ({
   onToggle,
 }) => {
   return (
-    <CollapsibleSection title="Inspector" isExpanded={isExpanded} onToggle={onToggle}>
+    <CollapsibleSection
+      title="Inspector"
+      isExpanded={isExpanded}
+      onToggle={onToggle}
+    >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelBase}>Inspector (Sign & Name)</label>
-          <input className={inputBase} value={inspectorName} onChange={(e) => onChangeName(e.target.value)} />
+          <input
+            className={inputBase}
+            value={inspectorName}
+            onChange={(e) => onChangeName(e.target.value)}
+          />
         </div>
         <div>
           <label className={labelBase}>Date</label>
@@ -41,5 +49,3 @@ const InspectorSection: React.FC<Props> = ({
 };
 
 export default InspectorSection;
-
-

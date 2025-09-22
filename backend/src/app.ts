@@ -20,7 +20,7 @@ console.log(port);
 app.use(express.json());
 
 app.use("/api/jobs", jobRoutes);
-app.use("/api/final-inspection", finalInspectionReportRoutes);
+app.use("/api/final-inspection-report", finalInspectionReportRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

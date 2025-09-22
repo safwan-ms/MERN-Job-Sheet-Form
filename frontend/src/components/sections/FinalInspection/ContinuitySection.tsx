@@ -75,6 +75,7 @@ const ContinuitySection: React.FC<Props> = ({
                     }
                   />
                 </td>
+
                 <td className="border border-gray-200 px-2 py-1 min-w-[160px]">
                   <input
                     className={inputBase}
