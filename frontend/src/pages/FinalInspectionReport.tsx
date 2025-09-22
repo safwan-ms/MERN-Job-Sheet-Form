@@ -284,7 +284,7 @@ const FinalInspectionReport: React.FC = () => {
                   isSubmitting ||
                   (editId ? finalInspectionDetailLoading : false)
                 }
-                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 shadow disabled:opacity-60"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 shadow disabled:opacity-60 cursor-pointer"
                 onClick={async () => {
                   const payload = {
                     staticPressure,

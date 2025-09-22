@@ -1,51 +1,57 @@
 import { z } from "zod";
 
+// Helper: ISO date (YYYY-MM-DD) or empty
+const dateSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)")
+  .optional();
+
 // Static Pressure validation
 const staticPressureSchema = z.object({
-  type: z.string().trim().optional().default(""),
-  date: z.string().optional().default(""),
-  operator: z.string().trim().optional().default(""),
-  workingPressure: z.string().trim().optional().default(""),
-  testPressure: z.string().trim().optional().default(""),
-  durationWP: z.string().trim().optional().default(""),
-  durationTP: z.string().trim().optional().default(""),
-  gaugeNo: z.string().trim().optional().default(""),
-  result: z.enum(["", "passed", "failed"]).default(""),
+  type: z.string().min(1, "Type is required"),
+  date: dateSchema,
+  operator: z.string().min(1, "Operator is required"),
+  workingPressure: z.number().min(0, "Must be a positive number"),
+  testPressure: z.number().min(0, "Must be a positive number"),
+  durationWP: z.number().min(1, "Duration (WP) required"),
+  durationTP: z.number().min(1, "Duration (TP) required"),
+  gaugeNo: z.string().min(1, "Gauge number required"),
+  result: z.enum(["passed", "failed"], "Result is required"),
 });
 
 // Testing Length Row validation
 const testingLengthRowSchema = z.object({
-  slNo: z.number(),
-  tagNo: z.string().trim().optional().default(""),
-  gaugeSlNo: z.string().trim().optional().default(""),
-  beforeWithoutWater: z.string().trim().optional().default(""),
-  beforeAt10psi: z.string().trim().optional().default(""),
-  duringTestL1: z.string().trim().optional().default(""),
-  afterTestL2: z.string().trim().optional().default(""),
-  elongationPercent: z.string().trim().optional().default(""),
-  remarks: z.string().trim().optional().default(""),
+  slNo: z.number().min(1),
+  tagNo: z.string().min(1, "Tag number required"),
+  gaugeSlNo: z.string().min(1, "Gauge serial number required"),
+  beforeWithoutWater: z.number().min(0),
+  beforeAt10psi: z.number().min(0),
+  duringTestL1: z.number().min(0),
+  afterTestL2: z.number().min(0),
+  elongationPercent: z.number().min(0).max(100),
+  remarks: z.string().optional(),
 });
 
 // Continuity Row validation
 const continuityRowSchema = z.object({
-  slNo: z.number(),
-  tagNo: z.string().trim().optional().default(""),
-  before: z.string().trim().optional().default(""),
-  during: z.string().trim().optional().default(""),
-  after: z.string().trim().optional().default(""),
-  remarks: z.string().trim().optional().default(""),
+  slNo: z.number().min(1),
+  tagNo: z.string().min(1),
+  before: z.number().min(0),
+  during: z.number().min(0),
+  after: z.number().min(0),
+  remarks: z.string().optional(),
 });
 
 // Final Inspection Row validation
 const finalInspectionRowSchema = z.object({
-  slNo: z.number(),
-  tagNo: z.string().trim().optional().default(""),
-  hoseBld: z.string().trim().optional().default(""),
-  assemblyLength: z.string().trim().optional().default(""),
-  endFittingVerification: z.string().trim().optional().default(""),
-  identification: z.string().trim().optional().default(""),
-  colourCodes: z.string().trim().optional().default(""),
-  remarks: z.string().trim().optional().default(""),
+  slNo: z.number().min(1),
+  tagNo: z.string().min(1),
+  hoseBld: z.string().min(1),
+  assemblyLength: z.number().min(0),
+  endFittingVerification: z.enum(["ok", "not_ok"]),
+  identification: z.string().min(1),
+  colourCodes: z.string().min(1),
+  remarks: z.string().optional(),
 });
 
 // Options validation
@@ -58,22 +64,26 @@ const optionsSchema = z.object({
 
 // Inspector validation
 const inspectorSchema = z.object({
-  name: z.string().trim().optional().default(""),
-  date: z.string().optional().default(""),
+  name: z.string().min(1, "Inspector name required"),
+  date: dateSchema,
 });
 
 // Final Acceptance validation
 const finalAcceptanceSchema = z.object({
-  rows: z.array(finalInspectionRowSchema).default([]),
-  acceptedQty: z.number().min(0).optional(),
-  rejectedQty: z.number().min(0).optional(),
+  rows: z.array(finalInspectionRowSchema).min(1, "At least one row required"),
+  acceptedQty: z.number().min(0).default(0),
+  rejectedQty: z.number().min(0).default(0),
 });
 
 // Main Final Inspection Report schema
 export const finalInspectionReportSchema = z.object({
   staticPressure: staticPressureSchema,
-  testingLength: z.array(testingLengthRowSchema).default([]),
-  continuity: z.array(continuityRowSchema).default([]),
+  testingLength: z
+    .array(testingLengthRowSchema)
+    .min(1, "At least one test row"),
+  continuity: z
+    .array(continuityRowSchema)
+    .min(1, "At least one continuity row"),
   options: optionsSchema,
   finalAcceptance: finalAcceptanceSchema,
   inspector: inspectorSchema,
