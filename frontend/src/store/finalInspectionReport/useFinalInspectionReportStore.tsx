@@ -101,64 +101,6 @@ const initialFormData: FinalInspectionReportPayload = {
     date: "",
   },
 };
-const mapPathToFlatKey = (path: string[]): string => {
-  const joined = path.join(".");
-  const map: Record<string, string> = {
-    // --- Static Pressure ---
-    "staticPressure.type": "type",
-    "staticPressure.date": "date",
-    "staticPressure.operator": "operator",
-    "staticPressure.workingPressure": "workingPressure",
-    "staticPressure.testPressure": "testPressure",
-    "staticPressure.durationWP": "durationWP",
-    "staticPressure.durationTP": "durationTP",
-    "staticPressure.gaugeNo": "gaugeNo",
-    "staticPressure.result": "result",
-
-    // --- Testing Length ---
-    "testingLength.slNo": "slNo",
-    "testingLength.tagNo": "tagNo",
-    "testingLength.gaugeSlNo": "gaugeSlNo",
-    "testingLength.beforeWithoutWater": "beforeWithoutWater",
-    "testingLength.beforeAt10psi": "beforeAt10psi",
-    "testingLength.duringTestL1": "duringTestL1",
-    "testingLength.afterTestL2": "afterTestL2",
-    "testingLength.elongationPercent": "elongationPercent",
-    "testingLength.remarks": "remarks",
-
-    // --- Continuity ---
-    "continuity.slNo": "slNo",
-    "continuity.tagNo": "tagNo",
-    "continuity.before": "before",
-    "continuity.during": "during",
-    "continuity.after": "after",
-    "continuity.remarks": "remarks",
-
-    // --- Options ---
-    "options.airPurging": "airPurging",
-    "options.nitrogenPurging": "nitrogenPurging",
-    "options.capping": "capping",
-    "options.blueGoldCleaning": "blueGoldCleaning",
-
-    // --- Final Acceptance (rows + summary) ---
-    "finalAcceptance.rows.slNo": "slNo",
-    "finalAcceptance.rows.tagNo": "tagNo",
-    "finalAcceptance.rows.hoseBld": "hoseBld",
-    "finalAcceptance.rows.assemblyLength": "assemblyLength",
-    "finalAcceptance.rows.endFittingVerification": "endFittingVerification",
-    "finalAcceptance.rows.identification": "identification",
-    "finalAcceptance.rows.colourCodes": "colourCodes",
-    "finalAcceptance.rows.remarks": "remarks",
-    "finalAcceptance.acceptedQty": "acceptedQty",
-    "finalAcceptance.rejectedQty": "rejectedQty",
-
-    // --- Inspector ---
-    "inspector.name": "name",
-    "inspector.date": "date",
-  };
-
-  return map[joined] ?? joined; // fallback: return joined if not explicitly mapped
-};
 
 export const useFinalInspectionReportStore = create<FinalInspectionReportStore>(
   (set, get) => ({
@@ -183,7 +125,7 @@ export const useFinalInspectionReportStore = create<FinalInspectionReportStore>(
         const newErrors: FormErrors = {};
         if (err instanceof ZodError) {
           err.issues.forEach((issue) => {
-            const key = mapPathToFlatKey(issue.path as string[]);
+            const key = (issue.path as string[]).join(".");
             if (!newErrors[key]) newErrors[key] = issue.message;
           });
         }
@@ -191,10 +133,10 @@ export const useFinalInspectionReportStore = create<FinalInspectionReportStore>(
       }
     },
 
-    createFinalInspectionReport: async () => {
-      const { formData, validateWithZod } = get();
+    createFinalInspectionReport: async (payload: FinalInspectionReportPayload) => {
+      const { validateWithZod } = get();
       set({ isSubmitting: true, successMessage: "", errors: {} });
-      const validation = validateWithZod(formData);
+      const validation = validateWithZod(payload);
       if (!validation.ok) {
         set({ errors: validation.errors, isSubmitting: false });
         return;
@@ -202,7 +144,7 @@ export const useFinalInspectionReportStore = create<FinalInspectionReportStore>(
 
       try {
         set({ isSubmitting: true });
-        const response = await axios.post(FINAL_INSPECTION_REPORT, formData);
+        const response = await axios.post(FINAL_INSPECTION_REPORT, payload);
         if (response.data?.success) {
           set({
             successMessage: "Final Inspection Report saved successfully.",
@@ -220,7 +162,7 @@ export const useFinalInspectionReportStore = create<FinalInspectionReportStore>(
           }>;
           const newErrors: FormErrors = {};
           backendErrors.forEach((e) => {
-            const key = mapPathToFlatKey(e.field.split("."));
+            const key = e.field; // assume backend sends dotted path keys
             if (!newErrors[key]) newErrors[key] = e.message;
           });
           set({ errors: newErrors });
