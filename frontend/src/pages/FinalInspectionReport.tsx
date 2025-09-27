@@ -217,6 +217,7 @@ const FinalInspectionReport: React.FC = () => {
                 setTestingLengthRows(n);
               }}
               isExpanded={expanded.testingLength}
+              errors={errors}
               onToggle={() =>
                 setExpanded((s) => ({ ...s, testingLength: !s.testingLength }))
               }
@@ -242,6 +243,7 @@ const FinalInspectionReport: React.FC = () => {
               onToggle={() =>
                 setExpanded((s) => ({ ...s, options: !s.options }))
               }
+              errors={errors}
             />
 
             <FinalAcceptanceSection

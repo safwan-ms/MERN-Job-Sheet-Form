@@ -1,6 +1,7 @@
 import React from "react";
 import CollapsibleSection from "../../common/CollapsibleSection";
 import { inputBase, labelBase } from "./types";
+import type { FormErrors } from "@/types";
 
 type Props = {
   inspectorName: string;
@@ -9,6 +10,7 @@ type Props = {
   onChangeDate: (value: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
+  errors: FormErrors;
 };
 
 const InspectorSection: React.FC<Props> = ({
@@ -18,6 +20,7 @@ const InspectorSection: React.FC<Props> = ({
   onChangeDate,
   isExpanded,
   onToggle,
+  errors,
 }) => {
   return (
     <CollapsibleSection
@@ -33,6 +36,9 @@ const InspectorSection: React.FC<Props> = ({
             value={inspectorName}
             onChange={(e) => onChangeName(e.target.value)}
           />
+          {errors.inspectorName && (
+            <p className="text-red-500 text-sm mt-1">{errors.inspectorName}</p>
+          )}
         </div>
         <div>
           <label className={labelBase}>Date</label>
@@ -42,6 +48,9 @@ const InspectorSection: React.FC<Props> = ({
             value={inspectorDate}
             onChange={(e) => onChangeDate(e.target.value)}
           />
+          {errors.inspectorDate && (
+            <p className="text-red-500 text-sm mt-1">{errors.inspectorDate}</p>
+          )}
         </div>
       </div>
     </CollapsibleSection>

@@ -2,12 +2,14 @@ import React from "react";
 import CollapsibleSection from "../../common/CollapsibleSection";
 import type { TestingLengthRow } from "./types";
 import { inputBase } from "./types";
+import type { FormErrors } from "@/types";
 
 type Props = {
   rows: TestingLengthRow[];
   onChangeRow: (index: number, data: Partial<TestingLengthRow>) => void;
   isExpanded: boolean;
   onToggle: () => void;
+  errors?: FormErrors;
 };
 
 const TestingLengthSection: React.FC<Props> = ({
@@ -15,6 +17,7 @@ const TestingLengthSection: React.FC<Props> = ({
   onChangeRow,
   isExpanded,
   onToggle,
+  errors,
 }) => {
   return (
     <CollapsibleSection
@@ -64,6 +67,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { tagNo: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.tagNo && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].tagNo}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[120px]">
                   <input
@@ -73,6 +81,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { gaugeSlNo: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.gaugeSlNo && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].gaugeSlNo}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[140px]">
                   <input
@@ -82,6 +95,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { beforeWithoutWater: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.beforeWithoutWater && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].beforeWithoutWater}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[140px]">
                   <input
@@ -91,6 +109,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { beforeAt10psi: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.beforeAt10psi && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].beforeAt10psi}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[140px]">
                   <input
@@ -109,6 +132,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { afterTestL2: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.afterTestL2 && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].afterTestL2}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[120px]">
                   <input
@@ -118,6 +146,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { elongationPercent: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.elongationPercent && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].elongationPercent}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-gray-200 px-2 py-1 min-w-[160px]">
                   <input
@@ -127,6 +160,11 @@ const TestingLengthSection: React.FC<Props> = ({
                       onChangeRow(idx, { remarks: e.target.value })
                     }
                   />
+                  {errors?.[idx]?.remarks && (
+                    <span className="text-red-500 text-sm">
+                      {errors[idx].remarks}
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}
